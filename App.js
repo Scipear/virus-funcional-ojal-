@@ -1,11 +1,46 @@
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, TextInput, Button, FlatList } from "react-native";
+import { Alert, View, StyleSheet, Platform, Text, TextInput, Button, FlatList } from "react-native";
+import * as Location from "expo-location";
+import HomeScreen from './screens/HomeScreen';
+import ServerScreen from './screens/ServerScreen';
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // Asegúrate de cambiar la IP si pruebas en un dispositivo real
+//const socket = io("http://localhost:3000"); // Asegúrate de cambiar la IP si pruebas en un dispositivo real
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [mensaje, setMensaje] = useState("");
+
+  useEffect(() => {
+    solicitarPermiso();
+  }, []);
+
+  const solicitarPermiso = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permiso requerido", "Se necesita acceso a la ubicación para obtener la IP.");
+      return;
+    }
+  };
+
+  return(
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Home'>
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{headerShown: false}}/>
+
+          <Stack.Screen 
+            name="Server" 
+            component={ServerScreen} 
+            options={{headerShown: false}}/>
+            
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+  /*const [mensaje, setMensaje] = useState("");
   const [mensajes, setMensajes] = useState([]);
 
   useEffect(() => {
@@ -45,7 +80,7 @@ export default function App() {
       />
       <Button title="Enviar" onPress={enviarMensaje} />
     </View>
-  );
+  );*/
 }
 
 const styles = StyleSheet.create({
