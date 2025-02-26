@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Server } from "socket.io";
-import { createServer } from "http";
-import * as Network from "expo-network";
+import TcpSocket from 'react-native-tcp-socket';
+
 
 export default function ServerScreen({ navigation }){
     const [ip, setIp] = useState("");
@@ -13,33 +12,40 @@ export default function ServerScreen({ navigation }){
             setIp(ipAddress);
         }
 
-        getIP();
-        iniciarServidor();
-    }, []);
+        const startServer = async () => {
+            const server = new TcpSocket.Server(8080);
 
-    const iniciarServidor = async () => {
-        const server = createServer();
-        const ioServer = new Server(server, {cors: { origin: "*" }});
-    
-        ioServer.on("connection", (socket) => {
-            console.log("Cliente conectado:", socket.id);
-    
-            socket.on("mensaje", (data) => {
-                console.log("Mensaje recibido:", data);
-                ioServer.emit("mensaje", data);
+            server.listen(() => {
+                console.log('Servidor escuchando en el puerto 8080');
             });
-    
-            socket.on("disconnect", () => {
-                console.log("Cliente desconectado:", socket.id);
+
+            server.on('connection', (socket) => {
+                console.log('Cliente conectado');
+                socket.on('data', (data) => {
+                    console.log('Mensaje del cliente:', data.toString());
+                    socket.write('Hola desde el servidor!');
+                });
+                socket.on('close', () => {
+                    console.log('Cliente desconectado');
+                });
+
+                socket.on('error', (error) => {
+                    console.error('Error del socket:', error);
+                });
             });
-        });
-    
-        server.listen(3000, () => {
-          console.log(`Servidor corriendo en ${ip}:3000`);
-          Alert.alert("Servidor Iniciado", `Escuchando en ${ip}:3000`);
-        });
-    
-    };
+
+            server.on('error', (error) => {
+                console.error('Error del servidor:', error);
+            });
+
+            return () => {
+                server.close(); //Cerrar el servidor correctamente
+            };
+        };
+
+        getIP();
+        startServer();
+    }, []);
 
     return(
         <View style={styles.container}>

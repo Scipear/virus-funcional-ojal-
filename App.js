@@ -5,9 +5,10 @@ import { Alert, View, StyleSheet, Platform, Text, TextInput, Button, FlatList } 
 import * as Location from "expo-location";
 import HomeScreen from './screens/HomeScreen';
 import ServerScreen from './screens/ServerScreen';
+import ClientScreen from './screens/ClientScreen';
 import { io } from "socket.io-client";
 
-//const socket = io("http://localhost:3000"); // Asegúrate de cambiar la IP si pruebas en un dispositivo real
+// socket = io("http://192.168.101.77:3000"); // Asegúrate de cambiar la IP si pruebas en un dispositivo real
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -35,6 +36,11 @@ export default function App() {
           <Stack.Screen 
             name="Server" 
             component={ServerScreen} 
+            options={{headerShown: false}}/>
+          
+          <Stack.Screen 
+            name="Cliente" 
+            component={ClientScreen} 
             options={{headerShown: false}}/>
             
       </Stack.Navigator>

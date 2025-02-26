@@ -9,7 +9,7 @@ export default function HomeScreen({ navigation }){
                <Text>Iniciar como servidor</Text>
             </Pressable>
 
-            <Pressable style={styles.clientButtonStyle}>
+            <Pressable style={styles.clientButtonStyle} onPress={() => navigation.navigate('Client')}>
                <Text>Iniciar como clinte</Text>
             </Pressable>
         </View>
