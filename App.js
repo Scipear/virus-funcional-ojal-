@@ -2,7 +2,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect, useState } from "react";
 import { Alert, View, StyleSheet, Platform, Text, TextInput, Button, FlatList } from "react-native";
-import * as Location from "expo-location";
 import HomeScreen from './screens/HomeScreen';
 import ServerScreen from './screens/ServerScreen';
 import ClientScreen from './screens/ClientScreen';
